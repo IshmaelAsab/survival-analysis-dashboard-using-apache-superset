@@ -1,0 +1,2 @@
+# Local-only SQL Server driver so the Dockerized Superset app can connect to SQLBook.
+pymssql
