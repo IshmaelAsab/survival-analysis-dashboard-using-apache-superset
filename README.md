@@ -1,14 +1,27 @@
 # Customer Retention and Value Analysis Using Survival Analysis Metrics
 
-This repository is a customized Apache Superset project focused on customer retention and value analysis using survival-analysis methods on the `SQLBook` Microsoft SQL Server sample database.
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/license/apache-2-0)
+[![PyPI version](https://badge.fury.io/py/apache_superset.svg)](https://badge.fury.io/py/apache_superset)
+[![PyPI](https://img.shields.io/pypi/pyversions/apache_superset.svg?maxAge=2592000)](https://pypi.python.org/pypi/apache_superset)
+[![Get on Slack](https://img.shields.io/badge/slack-join-orange.svg)](http://bit.ly/join-superset-slack)
+[![Documentation](https://img.shields.io/badge/docs-apache.org-blue.svg)](https://superset.apache.org)
+
+Apache Superset is a  modern, enterprise-ready business intelligence web application.
+
+This is a customized Apache Superset project focused on customer retention and value analysis using survival-analysis methods on Microsoft SQL Server sample database.
 
 It is based on Apache Superset `6.0.0`, but this clone is no longer intended to read like the generic upstream Apache project. It is now centered on:
 
-- a Windows-first local development setup
+- A local development setup
 - Docker Compose-based Superset startup
-- Microsoft SQL Server integration for `SQLBook`
-- a reusable survival-analysis dashboard built on `SQLBook.dbo.Subscribers`
+- Microsoft SQL Server integration 
+- a reusable survival-analysis dashboard
 - step-by-step runbooks and implementation notes for reproducing the setup
+
+
+<p align="center">
+  <img src="screenshot/img.png" alt="Dashboard Screenshot" width="800"/>
+</p>
 
 ## Project Snapshot
 
@@ -16,19 +29,10 @@ It is based on Apache Superset `6.0.0`, but this clone is no longer intended to 
 | --- | --- |
 | Base platform | Apache Superset `6.0.0` |
 | Local app URL | `http://localhost:8088/` |
-| Primary database | Microsoft SQL Server `SQLBook` |
+| Primary database | Microsoft SQL Server |
 | SQL Server connection style | `mssql+pymssql` via `host.docker.internal:1433` |
 | Main analysis table | `dbo.Subscribers` |
-| Example dataset for quick validation | `dbo.Orders` |
 | Main dashboard | `Customer Retention and Value Analysis using Survival Analysis Metrics` |
-
-## What Makes This Repo Different From Upstream Apache Superset
-
-- It documents the exact Windows laptop setup used to run Superset locally.
-- It includes SQL Server-specific local configuration and driver notes.
-- It includes SQLBook-focused example assets rather than only the default Superset examples.
-- It includes a reusable helper script for recreating the detailed survival-analysis dashboard.
-- It removes the generic Apache Superset community/contributor framing from the README and replaces it with project-specific guidance.
 
 ## Dashboard Results Included In This Project
 
