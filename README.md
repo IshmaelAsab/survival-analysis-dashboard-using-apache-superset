@@ -1,223 +1,199 @@
-<!--
-Licensed to the Apache Software Foundation (ASF) under one
-or more contributor license agreements.  See the NOTICE file
-distributed with this work for additional information
-regarding copyright ownership.  The ASF licenses this file
-to you under the Apache License, Version 2.0 (the
-"License"); you may not use this file except in compliance
-with the License.  You may obtain a copy of the License at
+# Customer Retention and Value Analysis Using Survival Analysis Metrics
 
-  http://www.apache.org/licenses/LICENSE-2.0
+This repository is a customized Apache Superset project focused on customer retention and value analysis using survival-analysis methods on the `SQLBook` Microsoft SQL Server sample database.
 
-Unless required by applicable law or agreed to in writing,
-software distributed under the License is distributed on an
-"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-KIND, either express or implied.  See the License for the
-specific language governing permissions and limitations
-under the License.
--->
+It is based on Apache Superset `6.0.0`, but this clone is no longer intended to read like the generic upstream Apache project. It is now centered on:
 
-# Superset
+- a Windows-first local development setup
+- Docker Compose-based Superset startup
+- Microsoft SQL Server integration for `SQLBook`
+- a reusable survival-analysis dashboard built on `SQLBook.dbo.Subscribers`
+- step-by-step runbooks and implementation notes for reproducing the setup
 
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/license/apache-2-0)
-[![Latest Release on Github](https://img.shields.io/github/v/release/apache/superset?sort=semver)](https://github.com/apache/superset/releases/latest)
-[![Build Status](https://github.com/apache/superset/actions/workflows/superset-python-unittest.yml/badge.svg)](https://github.com/apache/superset/actions)
-[![PyPI version](https://badge.fury.io/py/apache_superset.svg)](https://badge.fury.io/py/apache_superset)
-[![Coverage Status](https://codecov.io/github/apache/superset/coverage.svg?branch=master)](https://codecov.io/github/apache/superset)
-[![PyPI](https://img.shields.io/pypi/pyversions/apache_superset.svg?maxAge=2592000)](https://pypi.python.org/pypi/apache_superset)
-[![Get on Slack](https://img.shields.io/badge/slack-join-orange.svg)](http://bit.ly/join-superset-slack)
-[![Documentation](https://img.shields.io/badge/docs-apache.org-blue.svg)](https://superset.apache.org)
+## Project Snapshot
 
-<picture width="500">
-  <source
-    width="600"
-    media="(prefers-color-scheme: dark)"
-    src="https://superset.apache.org/img/superset-logo-horiz-dark.svg"
-    alt="Superset logo (dark)"
-  />
-  <img
-    width="600"
-    src="https://superset.apache.org/img/superset-logo-horiz-apache.svg"
-    alt="Superset logo (light)"
-  />
-</picture>
+| Item | Value |
+| --- | --- |
+| Base platform | Apache Superset `6.0.0` |
+| Local app URL | `http://localhost:8088/` |
+| Primary database | Microsoft SQL Server `SQLBook` |
+| SQL Server connection style | `mssql+pymssql` via `host.docker.internal:1433` |
+| Main analysis table | `dbo.Subscribers` |
+| Example dataset for quick validation | `dbo.Orders` |
+| Main dashboard | `Customer Retention and Value Analysis using Survival Analysis Metrics` |
 
-A modern, enterprise-ready business intelligence web application.
+## What Makes This Repo Different From Upstream Apache Superset
 
-[**Why Superset?**](#why-superset) |
-[**Supported Databases**](#supported-databases) |
-[**Installation and Configuration**](#installation-and-configuration) |
-[**Release Notes**](https://github.com/apache/superset/blob/master/RELEASING/README.md#release-notes-for-recent-releases) |
-[**Get Involved**](#get-involved) |
-[**Contributor Guide**](#contributor-guide) |
-[**Resources**](#resources) |
-[**Organizations Using Superset**](https://github.com/apache/superset/blob/master/RESOURCES/INTHEWILD.md)
+- It documents the exact Windows laptop setup used to run Superset locally.
+- It includes SQL Server-specific local configuration and driver notes.
+- It includes SQLBook-focused example assets rather than only the default Superset examples.
+- It includes a reusable helper script for recreating the detailed survival-analysis dashboard.
+- It removes the generic Apache Superset community/contributor framing from the README and replaces it with project-specific guidance.
 
-## Why Superset?
+## Dashboard Results Included In This Project
 
-Superset is a modern data exploration and data visualization platform. Superset can replace or augment proprietary business intelligence tools for many teams. Superset integrates well with a variety of data sources.
+The current SQLBook survival dashboard was validated locally and produced the following headline metrics:
 
-Superset provides:
+| KPI | Validated Value |
+| --- | --- |
+| Active Rate | `52.1%` |
+| 365-Day Survival | `72.1%` |
+| Customer Half-Life | `569 days` |
+| Avg Active Days in Year 1 | `304.57` |
 
-- A **no-code interface** for building charts quickly
-- A powerful, web-based **SQL Editor** for advanced querying
-- A **lightweight semantic layer** for quickly defining custom dimensions and metrics
-- Out of the box support for **nearly any SQL** database or data engine
-- A wide array of **beautiful visualizations** to showcase your data, ranging from simple bar charts to geospatial visualizations
-- Lightweight, configurable **caching layer** to help ease database load
-- Highly extensible **security roles and authentication** options
-- An **API** for programmatic customization
-- A **cloud-native architecture** designed from the ground up for scale
+These values come from the saved dashboard built on `SQLBook.dbo.Subscribers` and reflect the local SQLBook data used in this project.
 
-## Screenshots & Gifs
+## Dashboard Contents
 
-**Video Overview**
+The detailed dashboard includes:
 
-<!-- File hosted here https://github.com/apache/superset-site/raw/lfs/superset-video-4k.mp4 -->
+- KPI cards for active rate, 365-day survival, customer half-life, and average active days in year 1
+- `Tenure Distribution by Market`
+- `Stop Type Mix`
+- `Tenure Spread by Market`
+- `Survival Milestones`
+- `Market Survival Summary`
+- `First-Year Revenue by Market/Channel`
 
-[superset-video-1080p.webm](https://github.com/user-attachments/assets/b37388f7-a971-409c-96a7-90c4e31322e6)
+### Market-Level Highlights
 
-<br/>
+Validated examples from the saved dashboard and SQL checks:
 
-**Large Gallery of Visualizations**
+| Market | 365-Day Survival | Half-Life |
+| --- | --- | --- |
+| Gotham | `68.17%` | `453` |
+| Metropolis | `70.97%` | `610` |
+| Smallville | `82.95%` | not reached in the observed window |
 
-<kbd><img title="Gallery" src="https://superset.apache.org/img/screenshots/gallery.jpg"/></kbd><br/>
+## Data Sources Used
 
-**Craft Beautiful, Dynamic Dashboards**
+### `dbo.Subscribers`
 
-<kbd><img title="View Dashboards" src="https://superset.apache.org/img/screenshots/slack_dash.jpg"/></kbd><br/>
+Used for the main survival-analysis dashboard.
 
-**No-Code Chart Builder**
+Key fields used:
 
-<kbd><img title="Slice & dice your data" src="https://superset.apache.org/img/screenshots/explore.jpg"/></kbd><br/>
+- `SubscriberId`
+- `RatePlan`
+- `MonthlyFee`
+- `Market`
+- `Channel`
+- `StartDate`
+- `StopDate`
+- `StopType`
+- `Tenure`
+- `IsActive`
 
-**Powerful SQL Editor**
+### `dbo.Orders`
 
-<kbd><img title="SQL Lab" src="https://superset.apache.org/img/screenshots/sql_lab.jpg"/></kbd><br/>
+Used for the simpler SQLBook validation example and initial demonstration dashboard.
 
-## Supported Databases
+## Quick Start
 
-Superset can query data from any SQL-speaking datastore or data engine (Presto, Trino, Athena, [and more](https://superset.apache.org/docs/configuration/databases)) that has a Python DB-API driver and a SQLAlchemy dialect.
+Start the local Superset stack:
 
-Here are some of the major database solutions that are supported:
+```powershell
+cd C:\Users\hp\Documents\GitHub\Apache-Superset\superset
+$env:TAG = '6.0.0'
+docker compose -f docker-compose-image-tag.yml up -d
+```
 
-<p align="center">
-  <img src="https://superset.apache.org/img/databases/redshift.png" alt="redshift" border="0" width="200"/>
-  <img src="https://superset.apache.org/img/databases/google-biquery.png" alt="google-bigquery" border="0" width="200"/>
-  <img src="https://superset.apache.org/img/databases/snowflake.png" alt="snowflake" border="0" width="200"/>
-  <img src="https://superset.apache.org/img/databases/trino.png" alt="trino" border="0" width="150" />
-  <img src="https://superset.apache.org/img/databases/presto.png" alt="presto" border="0" width="200"/>
-  <img src="https://superset.apache.org/img/databases/databricks.png" alt="databricks" border="0" width="160" />
-  <img src="https://superset.apache.org/img/databases/druid.png" alt="druid" border="0" width="200" />
-  <img src="https://superset.apache.org/img/databases/firebolt.png" alt="firebolt" border="0" width="200" />
-  <img src="https://superset.apache.org/img/databases/timescale.png" alt="timescale" border="0" width="200" />
-  <img src="https://superset.apache.org/img/databases/postgresql.png" alt="postgresql" border="0" width="200" />
-  <img src="https://superset.apache.org/img/databases/mysql.png" alt="mysql" border="0" width="200" />
-  <img src="https://superset.apache.org/img/databases/mssql-server.png" alt="mssql-server" border="0" width="200" />
-  <img src="https://superset.apache.org/img/databases/ibm-db2.svg" alt="db2" border="0" width="220" />
-  <img src="https://superset.apache.org/img/databases/sqlite.png" alt="sqlite" border="0" width="200" />
-  <img src="https://superset.apache.org/img/databases/sybase.png" alt="sybase" border="0" width="200" />
-  <img src="https://superset.apache.org/img/databases/mariadb.png" alt="mariadb" border="0" width="200" />
-  <img src="https://superset.apache.org/img/databases/vertica.png" alt="vertica" border="0" width="200" />
-  <img src="https://superset.apache.org/img/databases/oracle.png" alt="oracle" border="0" width="200" />
-  <img src="https://superset.apache.org/img/databases/firebird.png" alt="firebird" border="0" width="200" />
-  <img src="https://superset.apache.org/img/databases/greenplum.png" alt="greenplum" border="0" width="200"  />
-  <img src="https://superset.apache.org/img/databases/clickhouse.png" alt="clickhouse" border="0" width="200" />
-  <img src="https://superset.apache.org/img/databases/exasol.png" alt="exasol" border="0" width="160" />
-  <img src="https://superset.apache.org/img/databases/monet-db.png" alt="monet-db" border="0" width="200"  />
-  <img src="https://superset.apache.org/img/databases/apache-kylin.png" alt="apache-kylin" border="0" width="80"/>
-  <img src="https://superset.apache.org/img/databases/hologres.png" alt="hologres" border="0" width="80"/>
-  <img src="https://superset.apache.org/img/databases/netezza.png" alt="netezza" border="0" width="80"/>
-  <img src="https://superset.apache.org/img/databases/pinot.png" alt="pinot" border="0" width="200" />
-  <img src="https://superset.apache.org/img/databases/teradata.png" alt="teradata" border="0" width="200" />
-  <img src="https://superset.apache.org/img/databases/yugabyte.png" alt="yugabyte" border="0" width="200" />
-  <img src="https://superset.apache.org/img/databases/databend.png" alt="databend" border="0" width="200" />
-  <img src="https://superset.apache.org/img/databases/starrocks.png" alt="starrocks" border="0" width="200" />
-  <img src="https://superset.apache.org/img/databases/doris.png" alt="doris" border="0" width="200" />
-  <img src="https://superset.apache.org/img/databases/oceanbase.svg" alt="oceanbase" border="0" width="220" />
-  <img src="https://superset.apache.org/img/databases/sap-hana.png" alt="sap-hana" border="0" width="220" />
-  <img src="https://superset.apache.org/img/databases/denodo.png" alt="denodo" border="0" width="200" />
-  <img src="https://superset.apache.org/img/databases/ydb.svg" alt="ydb" border="0" width="200" />
-  <img src="https://superset.apache.org/img/databases/tdengine.png" alt="TDengine" border="0" width="200" />
-</p>
+Verify health:
 
-**A more comprehensive list of supported databases** along with the configuration instructions can be found [here](https://superset.apache.org/docs/configuration/databases).
+```powershell
+Invoke-WebRequest -Uri 'http://localhost:8088/health' -UseBasicParsing
+```
 
-Want to add support for your datastore or data engine? Read more [here](https://superset.apache.org/docs/frequently-asked-questions#does-superset-work-with-insert-database-engine-here) about the technical requirements.
+Expected response:
 
-## Installation and Configuration
+```text
+OK
+```
 
-Try out Superset's [quickstart](https://superset.apache.org/docs/quickstart/) guide or learn about [the options for production deployments](https://superset.apache.org/docs/installation/architecture/).
+Open the app:
 
-## Get Involved
+- Login: `http://localhost:8088/login/`
+- SQL Lab: `http://localhost:8088/sqllab/`
+- Database Connections: `http://localhost:8088/databaseview/list/`
 
-- Ask and answer questions on [StackOverflow](https://stackoverflow.com/questions/tagged/apache-superset) using the **apache-superset** tag
-- [Join our community's Slack](http://bit.ly/join-superset-slack)
-  and please read our [Slack Community Guidelines](https://github.com/apache/superset/blob/master/CODE_OF_CONDUCT.md#slack-community-guidelines)
-- [Join our dev@superset.apache.org Mailing list](https://lists.apache.org/list.html?dev@superset.apache.org). To join, simply send an email to [dev-subscribe@superset.apache.org](mailto:dev-subscribe@superset.apache.org)
-- If you want to help troubleshoot GitHub Issues involving the numerous database drivers that Superset supports, please consider adding your name and the databases you have access to on the [Superset Database Familiarity Rolodex](https://docs.google.com/spreadsheets/d/1U1qxiLvOX0kBTUGME1AHHi6Ywel6ECF8xk_Qy-V9R8c/edit#gid=0)
-- Join Superset's Town Hall and [Operational Model](https://preset.io/blog/the-superset-operational-model-wants-you/) recurring meetings. Meeting info is available on the [Superset Community Calendar](https://superset.apache.org/community)
+## SQLBook Validation Query
 
-## Contributor Guide
+After logging in, choose the `SQLBook` database in SQL Lab and run:
 
-Interested in contributing? Check out our
-[CONTRIBUTING.md](https://github.com/apache/superset/blob/master/CONTRIBUTING.md)
-to find resources around contributing along with a detailed guide on
-how to set up a development environment.
+```sql
+SELECT TOP 10 * FROM dbo.Orders;
+```
 
-## Resources
+For a quick count check:
 
-- [Superset "In the Wild"](https://github.com/apache/superset/blob/master/RESOURCES/INTHEWILD.md) - open a PR to add your org to the list!
-- [Feature Flags](https://github.com/apache/superset/blob/master/RESOURCES/FEATURE_FLAGS.md) - the status of Superset's Feature Flags.
-- [Standard Roles](https://github.com/apache/superset/blob/master/RESOURCES/STANDARD_ROLES.md) - How RBAC permissions map to roles.
-- [Superset Wiki](https://github.com/apache/superset/wiki) - Tons of additional community resources: best practices, community content and other information.
-- [Superset SIPs](https://github.com/orgs/apache/projects/170) - The status of Superset's SIPs (Superset Improvement Proposals) for both consensus and implementation status.
+```sql
+SELECT COUNT(*) AS OrderCount
+FROM dbo.Orders;
+```
 
-Understanding the Superset Points of View
+Expected local result from this project setup:
 
-- [The Case for Dataset-Centric Visualization](https://preset.io/blog/dataset-centric-visualization/)
-- [Understanding the Superset Semantic Layer](https://preset.io/blog/understanding-superset-semantic-layer/)
+- `192983`
 
-- Getting Started with Superset
-  - [Superset in 2 Minutes using Docker Compose](https://superset.apache.org/docs/installation/docker-compose#installing-superset-locally-using-docker-compose)
-  - [Installing Database Drivers](https://superset.apache.org/docs/configuration/databases#installing-database-drivers)
-  - [Building New Database Connectors](https://preset.io/blog/building-database-connector/)
-  - [Create Your First Dashboard](https://superset.apache.org/docs/using-superset/creating-your-first-dashboard/)
-  - [Comprehensive Tutorial for Contributing Code to Apache Superset
-    ](https://preset.io/blog/tutorial-contributing-code-to-apache-superset/)
-- [Resources to master Superset by Preset](https://preset.io/resources/)
+## Main Dashboard
 
-- Deploying Superset
+Dashboard name:
 
-  - [Official Docker image](https://hub.docker.com/r/apache/superset)
-  - [Helm Chart](https://github.com/apache/superset/tree/master/helm/superset)
+- `Customer Retention and Value Analysis using Survival Analysis Metrics`
 
-- Recordings of Past [Superset Community Events](https://preset.io/events)
+Saved dashboard route in the local app:
 
-  - [Mixed Time Series Charts](https://preset.io/events/mixed-time-series-visualization-in-superset-workshop/)
-  - [How the Bing Team Customized Superset for the Internal Self-Serve Data & Analytics Platform](https://preset.io/events/how-the-bing-team-heavily-customized-superset-for-their-internal-data/)
-  - [Live Demo: Visualizing MongoDB and Pinot Data using Trino](https://preset.io/events/2021-04-13-visualizing-mongodb-and-pinot-data-using-trino/)
-  - [Introduction to the Superset API](https://preset.io/events/introduction-to-the-superset-api/)
-  - [Building a Database Connector for Superset](https://preset.io/events/2021-02-16-building-a-database-connector-for-superset/)
+- `http://localhost:8088/superset/dashboard/sqlbook-customer-survival-analysis/`
 
-- Visualizations
+This dashboard is backed by reusable virtual datasets created on the `SQLBook` database connection, including:
 
-  - [Creating Viz Plugins](https://superset.apache.org/docs/contributing/creating-viz-plugins/)
-  - [Managing and Deploying Custom Viz Plugins](https://medium.com/nmc-techblog/apache-superset-manage-custom-viz-plugins-in-production-9fde1a708e55)
-  - [Why Apache Superset is Betting on Apache ECharts](https://preset.io/blog/2021-4-1-why-echarts/)
+- `sqlbook_customer_survival_cohort`
+- `sqlbook_customer_survival_kpis`
+- `sqlbook_customer_survival_milestones`
+- `sqlbook_customer_survival_market_summary`
+- `sqlbook_customer_survival_revenue_mc`
 
-- [Superset API](https://superset.apache.org/docs/rest-api)
+## Documentation In This Repo
 
-## Repo Activity
+Start here:
 
-<a href="https://next.ossinsight.io/widgets/official/compose-last-28-days-stats?repo_id=39464018" target="_blank" align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://next.ossinsight.io/widgets/official/compose-last-28-days-stats/thumbnail.png?repo_id=39464018&image_size=auto&color_scheme=dark" width="655" height="auto" />
-    <img alt="Performance Stats of apache/superset - Last 28 days" src="https://next.ossinsight.io/widgets/official/compose-last-28-days-stats/thumbnail.png?repo_id=39464018&image_size=auto&color_scheme=light" width="655" height="auto" />
-  </picture>
-</a>
+- [steps.md](./steps.md)
 
-<!-- Made with [OSS Insight](https://ossinsight.io/) -->
+Detailed runbooks:
 
-<!-- telemetry/analytics pixel: -->
-<img referrerpolicy="no-referrer-when-downgrade" src="https://static.scarf.sh/a.png?x-pxid=bc1c90cd-bc04-4e11-8c7b-289fb2839492" />
+1. [Apache Superset Setup](./local-runbook/01-apache-superset-setup.md)
+2. [MSSQL Server + SQLBook Integration](./local-runbook/02-mssql-sqlbook.md)
+3. [Detailed Dashboard Build](./local-runbook/03-survival-dashboard.md)
+4. [Common Errors and Fixes](./local-runbook/04-common-errors-and-fixes.md)
+5. [Quick Rebuild Checklist and Minimal Path](./local-runbook/05-quick-rebuild-and-minimal-path.md)
+
+Full implementation log:
+
+- [SETUP_REPORT.md](./SETUP_REPORT.md)
+
+## Important Project Files
+
+| File | Purpose |
+| --- | --- |
+| [steps.md](./steps.md) | master index for the reusable documentation set |
+| [SETUP_REPORT.md](./SETUP_REPORT.md) | detailed command log and implementation record |
+| [docker/requirements-local.txt](./docker/requirements-local.txt) | local SQL Server Python driver override |
+| [tmp_sqlbook_survival_dashboard.py](./tmp_sqlbook_survival_dashboard.py) | helper script that recreates the survival-analysis datasets, charts, and dashboard |
+
+## Project Ownership
+
+Project owner and maintainer for this customized clone:
+
+- `Ishmael Asab`
+
+This README intentionally describes the project-specific implementation in this repository, not the full Apache Superset community project.
+
+## Upstream Attribution
+
+This project is built on top of Apache Superset.
+
+- Upstream project: [apache/superset](https://github.com/apache/superset)
+- Base version used here: `6.0.0`
+- Upstream license: Apache License 2.0
+
+If you want the upstream community documentation, release process, or contributor materials, use the Apache Superset repository directly. This repository focuses on the SQLBook survival-analysis implementation and the local Windows setup needed to run it.
